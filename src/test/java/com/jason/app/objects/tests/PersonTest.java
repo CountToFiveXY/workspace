@@ -12,9 +12,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class PersonTest {
-	
+
 	@Mock Person person;
-	
+
 	@Before
     public void setUp() throws Exception {
         person = mock(Person.class);

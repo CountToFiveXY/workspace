@@ -10,20 +10,16 @@ public class WorkSlotsHandler {
     HashMap<Person, List<WorkSlot>> MapPersonToHisWorkSlots;
     HashSet<Person> fullTimePerson;
 
-    public WorkSlotsHandler () {
-        workSlotContainersList = new ArrayList<WorkSlotContainer>();
+    public WorkSlotsHandler (List<WorkSlotContainer> workSlotContainersList) {
+        this.workSlotContainersList = workSlotContainersList;
         this.MapPersonToHisWorkSlots = new HashMap<>();
         this.fullTimePerson = new HashSet<>();
-    }
-
-    public void handleWorkSlotContainer (WorkSlotContainer workSlotContainer) {
-        workSlotContainersList.add(workSlotContainer);
     }
 
     public List<WorkSlot> fetchWorkSlotForThisDay (String date){
         List<WorkSlot> targetWorkSlots = new ArrayList<>();
         for(WorkSlotContainer workSlotContainer : workSlotContainersList) {
-            if (workSlotContainer.getDate().equals(date)) {
+            if (workSlotContainer.getDateOfCalender().equals(date)) {
                 targetWorkSlots = workSlotContainer.getWorkSlotList();
             }
         }

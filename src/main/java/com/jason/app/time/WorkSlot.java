@@ -11,19 +11,13 @@ import lombok.Setter;
 public class WorkSlot {
     private String fromTime;
 	private String toTime;
-	private WorkType workType; 
 	public Person assignee;
 	
-	public WorkSlot(String timeString, WorkType workType){
-		this.fromTime = getTime(timeString)[0];
-		this.toTime = getTime(timeString)[1];
-		this.workType = workType;
-		this.assignee = null;		
-	}
-	
-	private String[] getTime(String timeString){
-		String[] result = timeString.split("-");
-		return result;
+	public WorkSlot(String timeString){
+		String[] time = Tools.convertStringToArray(timeString);
+		this.fromTime = time[0];
+		this.toTime = time[1];
+		this.assignee = null;
 	}
 	
 	public int getWorkTime(){
