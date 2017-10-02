@@ -1,5 +1,7 @@
 package com.jason.app.time;
 
+import java.util.Date;
+
 import com.jason.app.objects.Person;
 import com.jason.app.utils.Tools;
 
@@ -12,12 +14,14 @@ public class WorkSlot {
     private String fromTime;
 	private String toTime;
 	public Person assignee;
+	public String Date;
 	
 	public WorkSlot(String timeString){
 		String[] time = Tools.convertStringToArray(timeString);
 		this.fromTime = time[0];
 		this.toTime = time[1];
 		this.assignee = null;
+		this.Date = null;
 	}
 	
 	public int getWorkTime(){

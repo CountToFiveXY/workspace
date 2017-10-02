@@ -17,7 +17,7 @@ public class FileHandler {
 	 *  将输出的csv文件转换为可以提取参数的数组模型
 	 */	
 	public static String[][] convertInputCSVFileToArray (String fileName) {
-		System.out.println("2.*****Starting converting .CSV File To Array-----\n");
+		System.out.println("2.Starting converting .CSV File To Array\n");
 		String[][] workSheet = new String[ROW][COLUMN];
 		try {
             @SuppressWarnings("resource")
@@ -25,7 +25,6 @@ public class FileHandler {
             int i = 0;
             String line;
             
-            //因为是csv文件，全是逗号，所以每行都要用.split()拆成字符串数组//
             while((line = reader.readLine()) != null) {
             	if (i >= ROW) {
             		System.out.println("输入文件人数太多，Jason设计人数时没考虑那么多人，请联系Jason或者自行修改代码参数");
@@ -52,7 +51,7 @@ public class FileHandler {
 		}catch (Exception e) {
 			System.out.println("这个文件无法被打开，具体原因请参照:\n "+e.toString());
 		}
-		System.out.println("-----Converting .csv file succeed, start displaying Data Table-----\n");
+		System.out.println("Converting .csv file succeed, start displaying Data Table\n");
 		//这里打印出班表的二维数组模型以供对照//
 		for(int i = 0; i < ROW; i ++){
 			if(workSheet[i][0] == null) {
@@ -71,7 +70,7 @@ public class FileHandler {
 	}
 
 	public static void setUpSalaryMap() {
-		System.out.println("1.*****Starting loading Salary Table-----\n");
+		System.out.println("1.Starting loading Salary Table\n");
 		try {
             @SuppressWarnings("resource")
 			BufferedReader reader = new BufferedReader(new FileReader("salary.txt"));
@@ -92,7 +91,7 @@ public class FileHandler {
 		} catch (Exception e) {
 			System.out.println("工资表无法被打开，具体原因请参照:\n "+e.toString());
 		}
-		System.out.println("-----Salary Map loading Success, start displaying Table-----\n");
+		System.out.println("Salary Map loading Success, start displaying Table\n");
 		//这里打印出班表的二维数组模型以供对照//
 
 		for(String personName :salaryMap.keySet()) {

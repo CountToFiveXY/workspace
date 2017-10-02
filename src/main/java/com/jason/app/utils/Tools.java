@@ -19,4 +19,25 @@ public class Tools {
 		}
 		return s;
 	}
+	
+	public static String correctDate (String date) {
+		String[] dateArray = convertStringToArray(date);
+		String modifiedDate = "";
+		int len = dateArray.length;
+		if (len != 3) {
+			System.out.println("this date is wrong");
+		}
+		for(int i = 0;i < len;i ++){
+			String s = dateArray[i];
+			if (s.length() == 1){
+				s = "0" + s;
+			}
+			if (i >= len-1) {
+				modifiedDate += s;
+			}else{
+				modifiedDate += s + "-";
+			}
+		}
+		return modifiedDate;
+	}
 }
