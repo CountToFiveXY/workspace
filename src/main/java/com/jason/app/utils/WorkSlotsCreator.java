@@ -5,6 +5,7 @@ import com.jason.app.time.WorkSlot;
 import com.jason.app.time.WorkSlotContainer;
 import lombok.Getter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -16,6 +17,7 @@ public class WorkSlotsCreator {
 
     List<WorkSlotContainer> AllWorkSlotContainersList = new ArrayList<>();
     int WorkSlotsSum = 0;
+    HashMap<String, Person> personMap = new HashMap<>();
 
     /**
      *  这个Method会把所有表格数据整理成一张日期对应WorkSlots的大表以便提取两个日期之间的所有工作时间。
@@ -27,24 +29,24 @@ public class WorkSlotsCreator {
             System.out.println("FileHandler传入的表格数据有误");
             return;
         }
-        System.out.println("3.-----Starting convert Data to Something used for program-----\n");
+        System.out.println("3.Starting convert Data to Something used for program\n");
 
         for (int j = 1; j < COLUMN ; j = j + 2) {
-            String dateInCalender = workSheet[0][j];
+            String dateInCalender = Tools.correctDate(workSheet[0][j]);
             String dateOfWeek = workSheet[1][j];
-            System.out.println("-----Moving to Date "+dateInCalender+" and try to create Container for this date-----\n");
+            System.out.println("---->Moving to Date "+dateInCalender+" and try to create Container for this date-----");
             List<WorkSlot> workSlotsForThisDate = new ArrayList<>();
             //因为前两行都是Date
             for( int i = 2; i < ROW; i ++) {
                 String personName = workSheet[i][0];
                 if (personName == null || personName.isEmpty()) {
-                    System.out.println("*****This is the last person, creating Container now-----\n");
+                    System.out.println("Scan ended, creating Container now......");
                     break;
                 }
                 Double salary = FileHandler.findSalaryForThisPerson(personName);
                 Person person = new Person(personName);
+                personMap.put(personName, person);
                 person.setSalary(salary);
-                System.out.println("-----go to Person "+personName+" whose salary is "+person.getSalary()+"-----\n");
                 //Handle Date Line Case and empty line Case
                 if (personName.equals("X") || personName.isEmpty() || personName == null ) {
                     continue;
@@ -58,14 +60,12 @@ public class WorkSlotsCreator {
                     workSlot.assignTo(person);
                     workSlotsForThisDate.add(workSlot);
                     WorkSlotsSum++;
-                    System.out.println("#####workSlotString "+workSlotString+" is fetched for "+personName+", WorkSlot Number so far is "+ workSlotsForThisDate.size()+"-----\n");
+                    System.out.println("workSlotString "+workSlotString+" is fetched for "+personName+", WorkSlot Number so far is "+ workSlotsForThisDate.size());
                 }
-                    System.out.println("-----Fetching For This Person Complete-----\n");
             }
             WorkSlotContainer workSlotContainer = new WorkSlotContainer(dateInCalender, dateOfWeek, workSlotsForThisDate);
-            System.out.println("-----The Date Container is created for "+dateInCalender+" ("+dateOfWeek+"), the size is "+workSlotsForThisDate.size()+"-----\n");
+            System.out.println("---->Date Container is created for "+dateInCalender+" ("+dateOfWeek+"), the size is "+workSlotsForThisDate.size()+"-----\n");
             AllWorkSlotContainersList.add(workSlotContainer);
-            System.out.println("-----Put "+dateInCalender+ " Container to List succeed-----\n");
         }
     }
 }

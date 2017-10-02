@@ -1,5 +1,9 @@
 package com.jason.app.objects;
 
+import static org.mockito.Matchers.booleanThat;
+
+import org.springframework.beans.factory.config.YamlProcessor.ResolutionMethod;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,5 +17,10 @@ public class Person {
 		this.name = name;
 		this.salary = 0;
 		this.fullTime = false;
+	}
+	public boolean isSame (Person p1) {
+		boolean name = p1.getName().equals(getName());
+		boolean salary = p1.getSalary() == getSalary();
+		return name && salary;
 	}
 }
