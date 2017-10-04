@@ -1,7 +1,5 @@
 package com.jason.app.objects;
 
-import static org.mockito.Matchers.booleanThat;
-
 import lombok.Getter;
 import lombok.Setter;
 
