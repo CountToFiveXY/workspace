@@ -4,20 +4,21 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.HashMap;
 
+import lombok.Getter;
+
 public class FileHandler {
 
-	static HashMap<String, Double> salaryMap = new HashMap<>();
+	@Getter HashMap<String, Double> salaryMap = new HashMap<>();
 	
 	/**
-	 *  我假设功夫茶的员工数量不会超过15个（如果超过了请告诉我，我改一下参数）
+	 *  假设功夫茶的员工数量不会超过13个
 	 */
-	static int ROW = 13;
-	static int COLUMN = 15;
+	static final int ROW = 13;
+	static final int COLUMN = 15;
 	/**
 	 *  将输出的csv文件转换为可以提取参数的数组模型
 	 */	
 	public static String[][] convertInputCSVFileToArray (String fileName) {
-		System.out.println("2.Starting converting .CSV File To Array\n");
 		String[][] workSheet = new String[ROW][COLUMN];
 		try {
             @SuppressWarnings("resource")
@@ -27,7 +28,8 @@ public class FileHandler {
             
             while((line = reader.readLine()) != null) {
             	if (i >= ROW) {
-            		System.out.println("输入文件人数太多，Jason设计人数时没考虑那么多人，请联系Jason或者自行修改代码参数");
+            		System.out.println("人数过多，该程序只取前11人，如扩招请找Jason");
+            		break;
             	}
             	String[] content = line.split(",");
             	int len = content.length;
@@ -49,7 +51,8 @@ public class FileHandler {
             	i++;
             }
 		}catch (Exception e) {
-			System.out.println("这个文件无法被打开，具体原因请参照:\n "+e.toString());
+			System.out.println("这个文件无法被打开，程序结束，具体原因:\n "+e.toString());
+			return new String[][]{};
 		}
 		System.out.println("Converting .csv file succeed, start displaying Data Table\n");
 		//这里打印出班表的二维数组模型以供对照//
@@ -69,7 +72,7 @@ public class FileHandler {
 		return workSheet;
 	}
 
-	public static void setUpSalaryMap() {
+	public void setUpSalaryMap() {
 		System.out.println("1.Starting loading Salary Table\n");
 		try {
             @SuppressWarnings("resource")
@@ -97,9 +100,5 @@ public class FileHandler {
 		for(String personName :salaryMap.keySet()) {
 			System.out.println(personName +"'s salary per hour is: " +salaryMap.get(personName));
 		}
-	}
-	
-	public static double findSalaryForThisPerson (String Name) {
-		return salaryMap.get(Name);		
 	}
 }

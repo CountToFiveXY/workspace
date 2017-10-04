@@ -4,6 +4,7 @@ import com.jason.app.objects.Person;
 import com.jason.app.time.WorkSlot;
 import com.jason.app.time.WorkSlotContainer;
 import lombok.Getter;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -43,10 +44,8 @@ public class WorkSlotsCreator {
                     System.out.println("Scan ended, creating Container now......");
                     break;
                 }
-                Double salary = FileHandler.findSalaryForThisPerson(personName);
                 Person person = new Person(personName);
                 personMap.put(personName, person);
-                person.setSalary(salary);
                 //Handle Date Line Case and empty line Case
                 if (personName.equals("X") || personName.isEmpty() || personName == null ) {
                     continue;
@@ -66,6 +65,6 @@ public class WorkSlotsCreator {
             WorkSlotContainer workSlotContainer = new WorkSlotContainer(dateInCalender, dateOfWeek, workSlotsForThisDate);
             System.out.println("---->Date Container is created for "+dateInCalender+" ("+dateOfWeek+"), the size is "+workSlotsForThisDate.size()+"-----\n");
             AllWorkSlotContainersList.add(workSlotContainer);
-        }
+        }    
     }
 }
