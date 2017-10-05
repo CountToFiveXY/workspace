@@ -30,18 +30,17 @@ public class WorkSlotsCreator {
             System.out.println("FileHandler传入的表格数据有误");
             return;
         }
-        System.out.println("3.Starting convert Data to Something used for program\n");
 
         for (int j = 1; j < COLUMN ; j = j + 2) {
             String dateInCalender = Tools.correctDate(workSheet[0][j]);
             String dateOfWeek = workSheet[1][j];
-            System.out.println("---->Moving to Date "+dateInCalender+" and try to create Container for this date-----");
+            System.out.println("---->扫描至 "+dateInCalender+" 并且创建当日的Container");
             List<WorkSlot> workSlotsForThisDate = new ArrayList<>();
             //因为前两行都是Date
             for( int i = 2; i < ROW; i ++) {
                 String personName = workSheet[i][0];
                 if (personName == null || personName.isEmpty()) {
-                    System.out.println("Scan ended, creating Container now......");
+                    System.out.println("扫描结束, 创建Container中...");
                     break;
                 }
                 Person person = new Person(personName);
@@ -59,12 +58,18 @@ public class WorkSlotsCreator {
                     workSlot.assignTo(person);
                     workSlotsForThisDate.add(workSlot);
                     WorkSlotsSum++;
-                    System.out.println("workSlotString "+workSlotString+" is fetched for "+personName+", WorkSlot Number so far is "+ workSlotsForThisDate.size());
+                    System.out.println("班次 "+workSlotString+" is fetched for "+personName+", 当前班次个数为:"+ workSlotsForThisDate.size());
                 }
             }
             WorkSlotContainer workSlotContainer = new WorkSlotContainer(dateInCalender, dateOfWeek, workSlotsForThisDate);
-            System.out.println("---->Date Container is created for "+dateInCalender+" ("+dateOfWeek+"), the size is "+workSlotsForThisDate.size()+"-----\n");
-            AllWorkSlotContainersList.add(workSlotContainer);
+            if (workSlotsForThisDate.size() == 0) {
+            	System.out.println("该日为节假日，没有任何班次.\n");
+            }else{
+                System.out.println("---->"+dateInCalender+" ("+dateOfWeek+")的Container已创建, 包含班次个数为:"+workSlotsForThisDate.size()+"-----\n");
+            }
+            if (!AllWorkSlotContainersList.contains(workSlotContainer)){
+            	AllWorkSlotContainersList.add(workSlotContainer);
+            }           
         }    
     }
 }

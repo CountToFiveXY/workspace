@@ -15,30 +15,38 @@ import java.util.List;
 
 public class WorkSlotsHandler {
     List<WorkSlotContainer> workSlotContainersList;
+    List<WorkSlotContainer> ContainersBetweenTwoDays;
     HashMap<String, Person> personMap;
     HashMap<String, Double> salaryMap = new HashMap<>();
     HashSet<Person> fullTimePerson;
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     Calendar calendar = Calendar.getInstance();
     
-    public void init(WorkSlotsCreator workSlotsCreator, FileHandler fileHandler) {
+    public void init(WorkSlotsCreator workSlotsCreator, FileHandler fileHandler, String fromDate, String toDate) throws ParseException {
     	workSlotContainersList = workSlotsCreator.getAllWorkSlotContainersList();
 		personMap = workSlotsCreator.getPersonMap();
 		salaryMap = fileHandler.getSalaryMap();
-		System.out.println("Passing attributes To Handler......\n");
+		System.out.println("\n将参数传递至Handler...\n");
+		ContainersBetweenTwoDays = getAllWorkContainerBetweenTwoDays(fromDate, toDate);
     }
     
-    public void findResult(String fromDate, String toDate, String personName) throws ParseException {
-    	List<WorkSlotContainer> workSlotsContainerList = getAllWorkContainerBetweenTwoDays(fromDate, toDate);
-    	List<WorkSlot> workSlotsForThiPerson = findWorkSlotsForThisPerson(personName, workSlotsContainerList);
-    	System.out.println("\n5.Starting Calculating Salary for this person from "+fromDate+" to "+toDate);
+    public void findResult(String personName) throws ParseException {   	
+    	List<WorkSlot> workSlotsForThiPerson = findWorkSlotsForThisPerson(personName, ContainersBetweenTwoDays);
     	calculateSalary(workSlotsForThiPerson);
     }
     
-    public List<WorkSlotContainer> getAllWorkContainerBetweenTwoDays (String fromDateString, String toDateString) throws ParseException {
+    public List<WorkSlotContainer> getAllWorkContainerBetweenTwoDays (String fromDateString, String toDateString) {
     	List<WorkSlotContainer> allWorkContainersBetweenTwoDays= new ArrayList<>();
-    	Date fromDate = dateFormat.parse(fromDateString);
-    	Date toDate = dateFormat.parse(toDateString);
+    	Date fromDate = null;
+    	Date toDate = null;
+		try {
+			fromDate = dateFormat.parse(fromDateString);
+			toDate = dateFormat.parse(toDateString);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			System.out.println("[Error]: 程序崩溃，因为输入日期格式有毒，请重启程序并输入正确的参数\n");
+		}
+    	
     	Date date = fromDate;
     	while(!date.after(toDate)) {
     		String dateString = dateFormat.format(date);
@@ -52,20 +60,20 @@ public class WorkSlotsHandler {
     		calendar.add(Calendar.DATE, 1);
     		date = calendar.getTime();
     	}
-    	System.out.format("\n***** WorkContainers Fetching Complete, total %d containers fetched*****\n",allWorkContainersBetweenTwoDays.size());
+    	System.out.println("[Complete]: Containers扫描完毕, 共找到"+allWorkContainersBetweenTwoDays.size()+"个Containers.\n");
     	return allWorkContainersBetweenTwoDays;
     }
     
     public List<WorkSlot> findWorkSlotsForThisPerson(String name, List<WorkSlotContainer> containerList) {
     	if (personMap.isEmpty()) {
-    		System.out.println("\nError:map is not established");
+    		System.out.println("[Error]: map is not established");
     		return null;
     	}
     	if (name == null || !personMap.keySet().contains(name)) {
-    		System.out.println("\nError:I dont know this guy(Input Name is wrong)!");
+    		System.out.println("[Error]:"+ name +"这个人我不认识，请确认名字无误并重试!\n");
     		return null;
     	}
-    	System.out.println("\nStarting fetching workSlots for person: "+name);
+    	System.out.println("开始查询"+name+"的班次:");
     	Person person = personMap.get(name);
     	List<WorkSlot> workSlots = new ArrayList<>();
     	for (WorkSlotContainer container : containerList) {
@@ -73,25 +81,32 @@ public class WorkSlotsHandler {
     		String week = container.getDateOfWork();
     		List<WorkSlot> workSlotList = container.getWorkSlotList();
     		int count = 0;
-    		for(WorkSlot workSlot : workSlotList) {
+    		for (WorkSlot workSlot : workSlotList) {
     			if (workSlot.getAssignee().isSame(person)) {
     				count ++;
     				workSlot.setDate(date+"("+week+")");
     				workSlots.add(workSlot);
     			}
     		}
-    		System.out.println("found "+count+" workslot for person in "+ date +"("+ week +")");
+    		if (count != 0){
+    			System.out.println("在"+ date +"("+ week +")发现"+count+"个班次.");
+    		}
     	}
         int num = workSlots.size();
-    	System.out.println("(Action COMPLETE) All WorkSlots found for "+person.getName()+", the total number is "+num);
+    	System.out.println("[Complete]: "+person.getName()+"这段时间内的班次总数为"+num);
     	return workSlots;
     }
     
     public double calculateSalary (List<WorkSlot> workSlotsList) { 	
-    	if (workSlotsList.isEmpty()) {
-    		System.out.println("Something Wrong fecthing workSLots for this one, please check");
+    	if (workSlotsList == null) {
+    		System.out.println("程序已终止，请重试\n");
     		return 0.0;
     	}
+    	if (workSlotsList.isEmpty()) {
+    		System.out.println("\n这个人这段时间内没有上班.");
+    		return 0.0;
+    	}
+    	System.out.println("\n开始计算总时长:");
     	Person person = workSlotsList.get(0).getAssignee();
     	double salary = findSalaryForThisPerson(person.getName());
     	int hours = 0;
@@ -101,15 +116,15 @@ public class WorkSlotsHandler {
     		String to = workSlot.getToTime();
     		int workhour = workSlot.getWorkTime();
     		hours += workhour;
-    		System.out.format("In %s, working from %s to %s, +%d小时, 总时长: %d.\n", date,from,to,workhour,hours); 		  		
+    		System.out.format("%s, 班时: %s-%s, +%d小时, 总时长: %d.\n", date,from,to,workhour,hours); 		  		
     	}
     	double sum = (double) salary*hours;
-    	System.out.format("The Total salary is: %.2f X %d = %.3f.",salary,hours,sum);
+    	System.out.format("该时段总工资为: \n%.2f X %d = %.2f刀.\n\n",salary,hours,sum);
     	return sum;
     }
     public double findSalaryForThisPerson (String Name) {
 		if (!salaryMap.containsKey(Name)) {
-			System.out.println("(Error)Can't find salary for "+Name);
+			System.out.println("[Error]: Can't find salary for "+Name);
 		}
 		return salaryMap.get(Name);		
 	}
