@@ -1,7 +1,5 @@
 package com.jason.app.utils;
 
-import org.springframework.beans.factory.config.YamlProcessor.ResolutionMethod;
-
 public class Tools {
 	public static int convertStringToInteger(String s){
 		return Integer.parseInt(s);
