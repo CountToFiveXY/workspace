@@ -3,21 +3,21 @@ import com.jason.app.objects.Person;
 import com.jason.app.utils.FileHandler;
 import com.jason.app.utils.WorkSlotsCreator;
 
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.*;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
 
+/*
+** 这个类可以认为是班次的处理器，先把班次的容器筛选集中，再从容器里根据条件获取班次，处理后以统一格式呈现给用户
+*/
 public class WorkSlotsHandler {
+
     List<WorkSlotContainer> workSlotContainersList;
     List<WorkSlotContainer> ContainersBetweenTwoDays;
     HashMap<String, Person> personMap;
     HashMap<String, Double> salaryMap = new HashMap<>();
+    //先建着，估计以后有用//
     HashSet<Person> fullTimePerson;
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     Calendar calendar = Calendar.getInstance();
@@ -26,13 +26,12 @@ public class WorkSlotsHandler {
     	workSlotContainersList = workSlotsCreator.getAllWorkSlotContainersList();
 		personMap = workSlotsCreator.getPersonMap();
 		salaryMap = fileHandler.getSalaryMap();
-		System.out.println("\n将参数传递至Handler...\n");
 		ContainersBetweenTwoDays = getAllWorkContainerBetweenTwoDays(fromDate, toDate);
     }
     
-    public void findResult(String personName) throws ParseException {   	
+    public String findResult(String personName) throws ParseException {
     	List<WorkSlot> workSlotsForThiPerson = findWorkSlotsForThisPerson(personName, ContainersBetweenTwoDays);
-    	calculateSalary(workSlotsForThiPerson);
+    	return calculateSalary(workSlotsForThiPerson);
     }
     
     public List<WorkSlotContainer> getAllWorkContainerBetweenTwoDays (String fromDateString, String toDateString) {
@@ -44,7 +43,7 @@ public class WorkSlotsHandler {
 			toDate = dateFormat.parse(toDateString);
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
-			System.out.println("[Error]: 程序崩溃，因为输入日期格式有毒，请重启程序并输入正确的参数\n");
+			System.out.println("[Error]: 程序崩溃，因为输入日期格式有毒，请重启程序并输入正确的参数😅\n");
 		}
     	
     	Date date = fromDate;
@@ -70,10 +69,10 @@ public class WorkSlotsHandler {
     		return null;
     	}
     	if (name == null || !personMap.keySet().contains(name)) {
-    		System.out.println("[Error]:"+ name +"这个人我不认识，请确认名字无误并重试!\n");
+    		System.out.println("[Error]:"+ name +"这个人不在查询的班表里，请确认名字无误或更换班表!🌚\n");
     		return null;
     	}
-    	System.out.println("开始查询"+name+"的班次:");
+    	System.out.println("-->开始查询"+name+"的班次:");
     	Person person = personMap.get(name);
     	List<WorkSlot> workSlots = new ArrayList<>();
     	for (WorkSlotContainer container : containerList) {
@@ -93,39 +92,57 @@ public class WorkSlotsHandler {
     		}
     	}
         int num = workSlots.size();
-    	System.out.println("[Complete]: "+person.getName()+"这段时间内的班次总数为"+num);
+    	System.out.println("[Complete]: "+person.getName()+"这段时间内的班次总数为"+num+"\n");
     	return workSlots;
     }
     
-    public double calculateSalary (List<WorkSlot> workSlotsList) { 	
+    public String calculateSalary (List<WorkSlot> workSlotsList) {
+		StringBuilder logs = new StringBuilder();
     	if (workSlotsList == null) {
-    		System.out.println("程序已终止，请重试\n");
-    		return 0.0;
+    		logs.append("程序已终止，请重试.🤤@========================");
+    		return logs.toString();
     	}
     	if (workSlotsList.isEmpty()) {
-    		System.out.println("\n这个人这段时间内没有上班.");
-    		return 0.0;
+			logs.append("根据输入的表格，这个人这段时间内傻啦吧唧的没有上班.😴@========================");
+    		return logs.toString();
     	}
-    	System.out.println("\n开始计算总时长:");
+    	//开始录入工资LOG
+    	logs.append("开始计算总时长: @");
     	Person person = workSlotsList.get(0).getAssignee();
     	double salary = findSalaryForThisPerson(person.getName());
-    	int hours = 0;
-    	for (WorkSlot workSlot : workSlotsList) {
-    		String date = workSlot.getDate();
-    		String from = workSlot.getFromTime();
-    		String to = workSlot.getToTime();
-    		int workhour = workSlot.getWorkTime();
-    		hours += workhour;
-    		System.out.format("%s, 班时: %s-%s, +%d小时, 总时长: %d.\n", date,from,to,workhour,hours); 		  		
-    	}
-    	double sum = (double) salary*hours;
-    	System.out.format("该时段总工资为: \n%.2f X %d = %.2f刀.\n\n",salary,hours,sum);
-    	return sum;
-    }
-    public double findSalaryForThisPerson (String Name) {
-		if (!salaryMap.containsKey(Name)) {
-			System.out.println("[Error]: Can't find salary for "+Name);
+    	if (salary == 0.0) {
+			return "似乎没找到这个人的工资😟, 请检查终端信息.@========================";
 		}
+		int hours = 0;
+		for (WorkSlot workSlot : workSlotsList) {
+			String date = workSlot.getDate();
+			String from = workSlot.getFromTime();
+			String to = workSlot.getToTime();
+			int workHour = workSlot.getWorkTime();
+			int pre = hours;
+			hours += workHour;
+			logs.append(String.format("%s, 班时: %s-%s, 总时长: %d + %d = %d小时.@", date,from,to,pre,workHour,hours));
+		}
+		double sum = salary * hours;
+		logs.append(String.format("该时段总工资为: \n%.2f($/h) X %d(小时) = %.2f刀.@",salary,hours,sum));
+		//彩蛋
+		if (sum > 500.00)
+			logs.append("啥都不说了土豪带我飞呀~😍");
+		else if (sum > 330.00)
+			logs.append("嗯不错你上班时间及格了.👏");
+		else
+			logs.append("你个穷逼，还不赶紧干活挣钱.🌚");
+		logs.append("@========================");
+    	return logs.toString();
+    }
+
+    public double findSalaryForThisPerson (String Name) {
+    	System.out.println("-->查询"+ Name +"的工资记录");
+		if (!salaryMap.containsKey(Name)) {
+			System.out.println("\n[Error]: 无法找到"+Name+"的工资记录，请更新Salary.txt😮");
+			return 0.0;
+		}
+		System.out.println("\n已找到此人的工资记录，请去工资日志下查看🌞.\n");
 		return salaryMap.get(Name);		
 	}
 }

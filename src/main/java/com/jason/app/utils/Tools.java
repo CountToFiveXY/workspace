@@ -1,6 +1,14 @@
 package com.jason.app.utils;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+/*
+**这个类里大多是纠正各类格式的API
+* 由于经常会被调用，所以直接static类型。
+*/
 public class Tools {
+
 	public static int convertStringToInteger(String s){
 		return Integer.parseInt(s);
 	}
@@ -39,5 +47,11 @@ public class Tools {
 			}
 		}
 		return modifiedDate;
+	}
+
+	public static String getCurrentTime () {
+		SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		Date date = new Date();
+		return format.format(date).toString();
 	}
 }

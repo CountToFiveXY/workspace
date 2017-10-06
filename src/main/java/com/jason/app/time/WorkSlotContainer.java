@@ -4,9 +4,8 @@ import java.util.List;
 import lombok.Getter;
 
 /**
- *  这个类是用来装日期和对应的所有WorkSlots的
- *  有人可能要问为什么不用HashMap?
- *  好吧，HashMap 也挺好用。个人喜好，而且Creator里已经有一个Map装人物和WorkSlot的关系了
+ * 这个类是用来装日期和对应的所有班次的
+ * 其实HashMap 也挺好用，个人喜好问题。
  */
 @Getter
 public class WorkSlotContainer {

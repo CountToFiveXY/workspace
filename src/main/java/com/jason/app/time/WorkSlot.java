@@ -6,8 +6,11 @@ import com.jason.app.objects.Person;
 import com.jason.app.utils.Tools;
 
 import lombok.Getter;
-import lombok.Setter; 
+import lombok.Setter;
 
+/*
+** 班次类，没啥好说的
+*/
 @Getter
 @Setter
 public class WorkSlot {
