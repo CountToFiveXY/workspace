@@ -13,10 +13,18 @@ public class Tools {
 		return Integer.parseInt(s);
 	}
 	
-	public static String[] convertStringToArray(String s){
+	public static String[] convertStringToArray(String s) {
 		String[] result = s.split("-");
 		if (result.length == 1) {
 			return s.split("－");
+		}
+		return result;
+	}
+
+	public static String[] convertStringToTime(String s) {
+		String[] result = s.split(":");
+		if (result.length == 1) {
+			return s.split("：");
 		}
 		return result;
 	}
@@ -33,9 +41,9 @@ public class Tools {
 		String modifiedDate = "";
 		int len = dateArray.length;
 		if (len != 3) {
-			System.out.println("this date is wrong");
+			System.out.println("这一天日期格式不对，省略扫描");
 		}
-		for(int i = 0;i < len;i ++){
+		for(int i = 0; i < len; i ++){
 			String s = dateArray[i];
 			if (s.length() == 1){
 				s = "0" + s;

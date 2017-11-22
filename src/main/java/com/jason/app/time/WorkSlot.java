@@ -27,9 +27,29 @@ public class WorkSlot {
 		this.Date = null;
 	}
 	
-	public int getWorkTime(){
-		int workTime = Tools.convertStringToInteger(toTime) - Tools.convertStringToInteger(fromTime);
-		return workTime > 0 ? workTime : workTime + 12;
+	public double getWorkTime(){
+		double fromtime;
+		double totime;
+		if(fromTime.length() > 2) {
+			String[] fromTimeArray = Tools.convertStringToTime(fromTime);
+			int hour  = Tools.convertStringToInteger(fromTimeArray[0]);
+			double minutes = Tools.convertStringToInteger(fromTimeArray[1])/60.0;
+			fromtime = hour + minutes;
+		} else {
+			fromtime = (double)Tools.convertStringToInteger(fromTime);
+		}
+		if(toTime.length() > 2) {
+			String[] toTimeArray = Tools.convertStringToTime(toTime);
+			int hour  = Tools.convertStringToInteger(toTimeArray[0]);
+			double minutes = Tools.convertStringToInteger(toTimeArray[1])/60.0;
+			totime = hour + minutes;
+		} else {
+			totime = (double) Tools.convertStringToInteger(toTime);
+		}
+
+		double workTime = totime - fromtime;
+		//假设一个工作时间段不会少于3小时
+		return workTime > 2.5 ? workTime : workTime + 12;
 	}
 	
 	public void assignTo(Person person){

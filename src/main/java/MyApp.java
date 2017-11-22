@@ -88,10 +88,9 @@ public class MyApp {
 				if (!fromText.getText().isEmpty() && !toText.getText().isEmpty()) {
 					string = String.format("载入 %s 到 %s的工作数据.",fromText.getText().toString(),toText.getText().toString());
 				}else{
-					string = "[FBI WARNING]: 输入日期格式有误.";
+					string = "[Error]: 输入日期格式有误.";
 				}
 				JOptionPane.showMessageDialog(null, string);
-//				杭蔚-1
 				//phase 1: input worksheet and work on it.
 				System.out.println("1.-->载入班表中....");
 				String[][] table1 = FileHandler.convertInputCSVFileToArray("1.csv");
@@ -105,7 +104,7 @@ public class MyApp {
 				workSlotsCreator.createWorkSheetData(table2);
 				workSlotsCreator.createWorkSheetData(table3);
 				if (workSlotsCreator.getAllWorkSlotContainersList().size() != 21) {
-					System.out.println("[FBI WARNING]: 3张班表应该有21天才对, 但是目前只有"+workSlotsCreator.getAllWorkSlotContainersList().size()+"天的班.\n");
+					System.out.println("[Warning]: 3张班表应该有21天才对, 目前只有"+workSlotsCreator.getAllWorkSlotContainersList().size()+"天的班.\n");
 				} else {
 					System.out.println("[Complete]: 所有Containers都已建完, 共创建" + workSlotsCreator.getAllWorkSlotContainersList().size() +"天的Container, 班次总数为" +workSlotsCreator.getWorkSlotsSum()+"\n");
 				}
@@ -119,6 +118,7 @@ public class MyApp {
 				} catch (ParseException e1) {
 					e1.printStackTrace();
 				}
+				System.out.println("本次有工资记录的员工人数有: "+ workSlotsCreator.getPersonMap().keySet()+".\n");
 			}
 		});
 

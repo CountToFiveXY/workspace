@@ -43,7 +43,7 @@ public class WorkSlotsHandler {
 			toDate = dateFormat.parse(toDateString);
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
-			System.out.println("[Error]: 程序崩溃，因为输入日期格式有毒，请重启程序并输入正确的参数😅\n");
+			System.out.println("[Error]: 输入日期格式有毒，请输入正确的日期😅\n");
 		}
     	
     	Date date = fromDate;
@@ -65,14 +65,14 @@ public class WorkSlotsHandler {
     
     public List<WorkSlot> findWorkSlotsForThisPerson(String name, List<WorkSlotContainer> containerList) {
     	if (personMap.isEmpty()) {
-    		System.out.println("[Error]: map is not established");
+    		System.out.println("[Error]: Person map is not established");
     		return null;
     	}
     	if (name == null || !personMap.keySet().contains(name)) {
-    		System.out.println("[Error]:"+ name +"这个人不在查询的班表里，请确认名字无误或更换班表!🌚\n");
+    		System.out.println("[Error]:" + name + "这个人不在查询的班表里，请确认名字无误或更换班表!🌚\n");
     		return null;
     	}
-    	System.out.println("-->开始查询"+name+"的班次:");
+    	System.out.println("-->开始查询" + name + "的班次:");
     	Person person = personMap.get(name);
     	List<WorkSlot> workSlots = new ArrayList<>();
     	for (WorkSlotContainer container : containerList) {
@@ -113,18 +113,18 @@ public class WorkSlotsHandler {
     	if (salary == 0.0) {
 			return "似乎没找到这个人的工资😟, 请检查终端信息.@========================";
 		}
-		int hours = 0;
+		double hours = 0.0;
 		for (WorkSlot workSlot : workSlotsList) {
 			String date = workSlot.getDate();
 			String from = workSlot.getFromTime();
 			String to = workSlot.getToTime();
-			int workHour = workSlot.getWorkTime();
-			int pre = hours;
+			double workHour = workSlot.getWorkTime();
+			double pre = hours;
 			hours += workHour;
-			logs.append(String.format("%s, 班时: %s-%s, 总时长: %d + %d = %d小时.@", date,from,to,pre,workHour,hours));
+			logs.append(String.format("%s, 班时: %s-%s, 总时长: %.2f + %.2f = %.2f小时.@", date,from,to,pre,workHour,hours));
 		}
 		double sum = salary * hours;
-		logs.append(String.format("该时段总工资为: \n%.2f($/h) X %d(小时) = %.2f刀.@",salary,hours,sum));
+		logs.append(String.format("该时段总工资为: \n%.2f($/h) X %.2f(小时) = %.2f刀.@",salary,hours,sum));
 		//彩蛋
 		if (sum > 500.00)
 			logs.append("啥都不说了土豪带我飞呀~😍");
@@ -142,7 +142,7 @@ public class WorkSlotsHandler {
 			System.out.println("\n[Error]: 无法找到"+Name+"的工资记录，请更新Salary.txt😮");
 			return 0.0;
 		}
-		System.out.println("\n已找到此人的工资记录，请去工资日志下查看🌞.\n");
+		System.out.println("[Done!]:已找到此人的工资记录，请去工资日志下查看🌞.\n");
 		return salaryMap.get(Name);		
 	}
 }

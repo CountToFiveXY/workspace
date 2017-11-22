@@ -12,8 +12,8 @@ public class FileHandler {
 
 	@Getter HashMap<String, Double> salaryMap = new HashMap<>();
 
-	//假设功夫茶的员工数量不会超过13个
-	static final int ROW = 13;
+	//假设功夫茶的员工数量不会超过14个
+	static final int ROW = 15;
 	static final int COLUMN = 15;
 
 	/**
@@ -26,21 +26,21 @@ public class FileHandler {
 			BufferedReader reader = new BufferedReader(new FileReader(fileName));
             String line;
 			int i = 0;
-            while((line = reader.readLine()) != null) {
+            while ((line = reader.readLine()) != null) {
             	if (i >= ROW) {
-            		System.out.println("该程序只取前11人，如扩招请找Jason");
+            		System.out.println("该程序只取13人，如扩招请联系Jason");
             		break;
             	}
             	String[] content = line.split(",");
             	int len = content.length;
             	if (len > COLUMN) {
-            		System.out.println("是有人一个礼拜上8天么嘻嘻？");         		
+            		System.out.println("是有人一个礼拜上8天么？");
             	} else {
-            		for(int j = 0; j < len ; j ++) {
+            		for (int j = 0; j < len; j ++) {
             			String s = content[j];
-            			if(s.isEmpty() || s == ""){
+            			if (s.isEmpty() || s == "") {
             				workSheet[i][j] = "X";
-            			}else{
+            			} else {
             				workSheet[i][j] = Tools.removeBlankPrefixForString(s);
             			}
             		}
@@ -50,8 +50,9 @@ public class FileHandler {
             	}
             	i++;
             }
-		}catch (Exception e) {
-			System.out.println("\n[Error]:"+fileName+"文件无法被打开，程序结束，具体原因:\n "+e.toString());
+		} catch(Exception e) {
+			System.out.println("\n[Warning]:没有"+fileName+"这个文件");
+			return workSheet;
 		}
 		//这里打印出班表的二维数组模型以供对照//
 		System.out.println("\n表格"+fileName.charAt(0)+":");
@@ -62,14 +63,14 @@ public class FileHandler {
 			}
 			if (i == 0) {
 				System.out.print("日期行 ");
-			}else if (i ==1) {
+			} else if (i ==1) {
 				System.out.print("星期行 ");
-			}else{
+			} else {
 				System.out.print("第" + (i-1) + "行 ");
 			}
-			for(int j = 0; j < COLUMN; j ++){
+			for(int j = 0; j < COLUMN; j ++) {
 				System.out.print(workSheet[i][j] + " ");
-				if(j == COLUMN-1){
+				if(j == COLUMN-1) {
 					System.out.println();
 				}
 			}
@@ -83,13 +84,13 @@ public class FileHandler {
             @SuppressWarnings("resource")
 			BufferedReader reader = new BufferedReader(new FileReader("salary.txt"));
             String line = null;
-            while ((line = reader.readLine()) != null){
-            	String[] content = line.split("-");
-            	if (content.length != 2) {
+            while ((line = reader.readLine()) != null) {
+            	String[] salaryContent = Tools.convertStringToArray(line);
+            	if (salaryContent.length != 2) {
             		System.out.println("工资对照表格式不对，请参照Jason的样本修改格式\n");
             	}
-            	String personName = content[0];
-            	Double salary = Double.parseDouble(content[1]);
+            	String personName = salaryContent[0];
+            	Double salary = Double.parseDouble(salaryContent[1]);
             	if (salaryMap.containsKey(personName)) {
             		System.out.println(personName+"已有工资，无需反复加载");
             		continue;
