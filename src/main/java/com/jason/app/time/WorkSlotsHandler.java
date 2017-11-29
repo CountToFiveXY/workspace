@@ -126,12 +126,12 @@ public class WorkSlotsHandler {
 		double sum = salary * hours;
 		logs.append(String.format("该时段总工资为: \n%.2f($/h) X %.2f(小时) = %.2f刀.@",salary,hours,sum));
 		//彩蛋
-		if (sum > 500.00)
-			logs.append("啥都不说了土豪带我飞呀~😍");
-		else if (sum > 330.00)
-			logs.append("嗯不错你上班时间及格了.👏");
+		if (sum > 800.00)
+			logs.append("啥都不说了土豪快点带我飞呀~ 😍");
+		else if (sum > 400.00)
+			logs.append("不错,你上班时间及格了.再接再厉.👏");
 		else
-			logs.append("你个穷逼，还不赶紧干活挣钱.🌚");
+			logs.append("你个穷逼,还不赶紧干活挣钱.🌚");
 		logs.append("@========================");
     	return logs.toString();
     }
@@ -140,9 +140,10 @@ public class WorkSlotsHandler {
     	System.out.println("-->查询"+ Name +"的工资记录");
 		if (!salaryMap.containsKey(Name)) {
 			System.out.println("\n[Error]: 无法找到"+Name+"的工资记录，请更新Salary.txt😮");
+			System.out.println("程序暂停，请更新工资表后再点击查询工资按钮\n");
 			return 0.0;
 		}
-		System.out.println("[Done!]:已找到此人的工资记录，请去工资日志下查看🌞.\n");
+		System.out.println("[Done!]:已找到"+Name+"的工资记录，请去工资日志下查看🌞.\n");
 		return salaryMap.get(Name);		
 	}
 }
