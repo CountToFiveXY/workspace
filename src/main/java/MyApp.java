@@ -1,5 +1,6 @@
 import com.jason.app.time.WorkSlotsHandler;
 import com.jason.app.utils.FileHandler;
+import com.jason.app.utils.ImageHandler;
 import com.jason.app.utils.Tools;
 import com.jason.app.utils.WorkSlotsCreator;
 
@@ -18,38 +19,56 @@ import java.util.Date;
 public class MyApp {
 
 	public static void main(String[] args) throws ParseException {
-		
-        //三个核心类的对象
+
+		//App的参数
+		final int APP_WIDTH = 250;
+		final int APP_HEIGHT = 205;
+		final String KFT_VERSION_STRING  = " KungFuTea工资计算器v2.0";
+		final String AUTHOR_LABEL = "        ~~ Developed By @Jason ~~";
+		final String LABEL1 = "开始日期:";
+		final String LABEL2 = "结束日期:";
+		final String LABEL3 = "员工姓名:";
+		final String BUTTON1 = "加载表格";
+		final String BUTTON2 = "查询工资";
+		final String ORIGINAL_IMAGE_PATH = "resources/1.jpg";
+
+        //三个核心类的对象+一个背景处理器的对象
 		final FileHandler fileHandler = new FileHandler();
 		final WorkSlotsCreator workSlotsCreator = new WorkSlotsCreator();
 		final WorkSlotsHandler workSlotsHandler = new WorkSlotsHandler();
+		final ImageHandler imageHandler = new ImageHandler();
+
+	    //背景图片处理
+		imageHandler.printNewImage(ORIGINAL_IMAGE_PATH);
+		JLabel bgLabel = imageHandler.setBackGrondImageLabel();
 
         //开始建立GUI
-		JFrame jf = new JFrame(" KungFuTea工资计算器v1.0");
+		JFrame jf = new JFrame(KFT_VERSION_STRING);
 		jf.setLayout(null);
+		jf.getLayeredPane().add(bgLabel, new Integer(Integer.MIN_VALUE));
 
-		JPanel jpanel = new JPanel();
+		JPanel jpanel = (JPanel)jf.getContentPane();
 		jpanel.setLayout(null);
-		jpanel.setBackground(Color.WHITE);
-		jpanel.setBounds(20,0,280,220);
-
-		Container c = jf.getContentPane();
-		c.add(jpanel,BorderLayout.CENTER);
+		jpanel.setBounds(0,0,APP_WIDTH,APP_HEIGHT);
+		jpanel.setOpaque(false);
 
 		//建立Label
 		JLabel authorLabel,fromLabel, toLabel, nameLabel;
-		authorLabel = new JLabel("       ~~ Powered By Jason ~~");
-		fromLabel = new JLabel("开始日期:");
-		toLabel = new JLabel("结束日期:");
-		nameLabel = new JLabel("员工姓名:");
-		authorLabel.setBounds(20,5,200,23);;
-		fromLabel.setBounds(10,35,70,30);
-		toLabel.setBounds(10,70,70,30);
-		nameLabel.setBounds(10,105,70,30);
+		authorLabel = new JLabel(AUTHOR_LABEL);
+		fromLabel = new JLabel(LABEL1);
+		toLabel = new JLabel(LABEL2);
+		nameLabel = new JLabel(LABEL3);
+		authorLabel.setBounds(0,7,250,21);;
+		fromLabel.setBounds(30,35,70,30);
+		toLabel.setBounds(30,70,70,30);
+		nameLabel.setBounds(30,105,70,30);
+		authorLabel.setFont(new Font("Times New Roman",1,14));
+		fromLabel.setFont(new Font("Dialog",0,13));
+		toLabel.setFont(new Font("Dialog",0,13));
+		nameLabel.setFont(new Font("Dialog",0,13));
 		authorLabel.setBackground(Color.YELLOW);
 		authorLabel.setForeground(Color.BLUE);
 		authorLabel.setOpaque(true);
-		
         jpanel.add(authorLabel);
 		jpanel.add(fromLabel);
 		jpanel.add(toLabel);
@@ -67,9 +86,9 @@ public class MyApp {
 		fromText = new JTextField(year+"-"+month+"-");
 		toText = new JTextField(year+"-"+month+"-");
 		nameText = new JTextField();
-		fromText.setBounds(90,35,150,28);
-		toText.setBounds(90,70,150,28);
-		nameText.setBounds(90,105,150,28);
+		fromText.setBounds(95,35,125,28);
+		toText.setBounds(95,70,125,28);
+		nameText.setBounds(95,105,125,28);
 
 		jpanel.add(fromText);
 		jpanel.add(toText);
@@ -77,8 +96,8 @@ public class MyApp {
 
 		//两个按钮
 		JButton find, search;
-		find = new JButton("加载表格");
-		search = new JButton("查询工资");
+		find = new JButton(BUTTON1);
+		search = new JButton(BUTTON2);
 
 		//第一个按钮功能：建立数据
 		find.addActionListener(new ActionListener() {
@@ -93,9 +112,9 @@ public class MyApp {
 				JOptionPane.showMessageDialog(null, string);
 				//phase 1: input worksheet and work on it.
 				System.out.println("1.-->载入班表中....");
-				String[][] table1 = FileHandler.convertInputCSVFileToArray("1.csv");
-				String[][] table2 = FileHandler.convertInputCSVFileToArray("2.csv");
-				String[][] table3 = FileHandler.convertInputCSVFileToArray("3.csv");
+				String[][] table1 = FileHandler.convertInputCSVFileToArray("Tables/1.csv");
+				String[][] table2 = FileHandler.convertInputCSVFileToArray("Tables/2.csv");
+				String[][] table3 = FileHandler.convertInputCSVFileToArray("Tables/3.csv");
 				System.out.println("\n[Complete]: 表格数据已呈现完毕\n");
 
 				//phase 2: create WorkData For sheets.
@@ -149,18 +168,19 @@ public class MyApp {
 
 			}
 		});
-		find.setBackground(Color.pink);
+
+		find.setBackground(Color.WHITE);
 		find.setOpaque(true);
-		find.setBounds(5,140,107,35);
-		search.setBackground(Color.pink);
+		find.setBounds(10,140,107,35);
+		search.setBackground(Color.WHITE);
 		search.setOpaque(true);
-		search.setBounds(130,140,107,35);
+		search.setBounds(135,140,107,35);
 
 		jpanel.add(find);
 		jpanel.add(search);
 		
 		//GUI 配置设定
-		jf.setBounds(0,0,280,210);
+		jf.setBounds(0,0,APP_WIDTH,APP_HEIGHT);
 		jf.setVisible(true);
 		jf.setLocationRelativeTo(null);
 		jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
