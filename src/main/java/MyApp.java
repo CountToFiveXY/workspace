@@ -30,7 +30,7 @@ public class MyApp {
 		final String LABEL3 = "员工姓名:";
 		final String BUTTON1 = "加载表格";
 		final String BUTTON2 = "查询工资";
-		final String ORIGINAL_IMAGE_PATH = "resources/1.jpg";
+		final String ORIGINAL_IMAGE_PATH = "resource/1.jpg";
 
         //三个核心类的对象+一个背景处理器的对象
 		final FileHandler fileHandler = new FileHandler();
@@ -104,7 +104,7 @@ public class MyApp {
 			String string = "";
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (!fromText.getText().isEmpty() && !toText.getText().isEmpty()) {
+				if (!fromText.getText().endsWith("-") && !toText.getText().endsWith("-")) {
 					string = String.format("载入 %s 到 %s的工作数据.",fromText.getText().toString(),toText.getText().toString());
 				}else{
 					string = "[Error]: 输入日期格式有误.";
@@ -137,7 +137,8 @@ public class MyApp {
 				} catch (ParseException e1) {
 					e1.printStackTrace();
 				}
-				System.out.println("本次有工资记录的员工人数有: "+ workSlotsCreator.getPersonMap().keySet()+".\n");
+				System.out.println("本次有工资记录的员工人数有: "+ workSlotsCreator.getPersonMap().keySet()+"\n");
+				System.out.println("请复制粘贴此列表以便逐个查询,或者你可以每次查人之前都点一下'加载表格'来重复显示该内容.👌");
 			}
 		});
 
@@ -157,6 +158,9 @@ public class MyApp {
 						logs += timeLine;
 						logs += String.format("设定员工为:%s, 设定时间段为: %s 到 %s:@",nameText.getText(),fromText.getText(),toText.getText());
 						logs += workSlotsHandler.findResult(personName);
+						if (logs.endsWith("!")) {
+							s = "工资表找不到这个人.";
+						}
 						fileHandler.printSalarySummary(logs);
 					} catch (ParseException p) {
 						System.out.println(p.getMessage());
@@ -169,6 +173,7 @@ public class MyApp {
 			}
 		});
 
+        //配置按钮参数
 		find.setBackground(Color.WHITE);
 		find.setOpaque(true);
 		find.setBounds(10,140,107,35);

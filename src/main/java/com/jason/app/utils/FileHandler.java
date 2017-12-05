@@ -13,7 +13,7 @@ public class FileHandler {
 	@Getter HashMap<String, Double> salaryMap = new HashMap<>();
 
 	//假设功夫茶的员工数量不会超过14个
-	static final int ROW = 15;
+	static final int ROW = 16;
 	static final int COLUMN = 15;
 
 	/**
@@ -28,7 +28,7 @@ public class FileHandler {
 			int i = 0;
             while ((line = reader.readLine()) != null) {
             	if (i >= ROW) {
-            		System.out.println("该程序只取13人，如扩招请联系Jason");
+            		System.out.println("该程序只取"+(ROW-2)+"人，如扩招请联系Jason");
             		break;
             	}
             	String[] content = line.split(",");

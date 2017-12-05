@@ -28,7 +28,7 @@ public class WorkSlotsCreator {
         }
         int ROW = workSheet.length;
         int COLUMN = workSheet[0].length;
-        if (ROW != 15 || COLUMN != 15 || !workSheet[0][0].equals("X")) {
+        if (ROW != FileHandler.ROW || COLUMN != FileHandler.COLUMN || !workSheet[0][0].equals("X")) {
             System.out.println("FileHandler传入的表格数据有误\n");
             return;
         }

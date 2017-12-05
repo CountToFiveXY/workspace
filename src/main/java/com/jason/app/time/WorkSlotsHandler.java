@@ -59,7 +59,10 @@ public class WorkSlotsHandler {
     		calendar.add(Calendar.DATE, 1);
     		date = calendar.getTime();
     	}
-    	System.out.println("[Complete]: Containers扫描完毕, 共找到"+allWorkContainersBetweenTwoDays.size()+"个Containers.\n");
+    	String startDate = allWorkContainersBetweenTwoDays.get(0).getDateOfCalender();
+    	String endDate = allWorkContainersBetweenTwoDays.get(allWorkContainersBetweenTwoDays.size()-1).getDateOfCalender();
+    	String displayInfo = "起始日期为:"+startDate+", 结束日期为:"+endDate;
+    	System.out.println("[Complete]: Containers扫描完毕, 共找到"+allWorkContainersBetweenTwoDays.size()+"个Containers,"+displayInfo+".\n");
     	return allWorkContainersBetweenTwoDays;
     }
     
@@ -111,7 +114,7 @@ public class WorkSlotsHandler {
     	Person person = workSlotsList.get(0).getAssignee();
     	double salary = findSalaryForThisPerson(person.getName());
     	if (salary == 0.0) {
-			return "似乎没找到这个人的工资😟, 请检查终端信息.@========================";
+			return "似乎没找到这个人的工资😟, 请检查终端信息.@========================!";
 		}
 		double hours = 0.0;
 		for (WorkSlot workSlot : workSlotsList) {
@@ -127,11 +130,13 @@ public class WorkSlotsHandler {
 		logs.append(String.format("该时段总工资为: \n%.2f($/h) X %.2f(小时) = %.2f刀.@",salary,hours,sum));
 		//彩蛋
 		if (sum > 800.00)
-			logs.append("啥都不说了土豪快点带我飞呀~ 😍");
+			logs.append("这你不请客就说不过去了吧! 功夫茶的火锅钱你包了😍");
 		else if (sum > 400.00)
-			logs.append("不错,你上班时间及格了.再接再厉.👏");
+			logs.append("不错,你上班时间及格了.再接再厉,晚上吃鸡.👏");
+		else if (sum > 150)
+			logs.append("你个穷逼,还不赶紧干活挣钱. 这点钱套套都喂不饱🌚");
 		else
-			logs.append("你个穷逼,还不赶紧干活挣钱.🌚");
+			logs.append("要你何用👎");
 		logs.append("@========================");
     	return logs.toString();
     }

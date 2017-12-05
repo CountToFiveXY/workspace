@@ -10,7 +10,7 @@ import java.io.IOException;
 public class ImageHandler {
     private static final int IMG_WIDTH = 280;
     private static final int IMG_HEIGHT = 220;
-    private final String IMAGE_PATH= "resources/background.jpg";
+    private final String IMAGE_PATH= "resource/background.jpg";
 
     public void printNewImage (String imagePath) {
         try {
