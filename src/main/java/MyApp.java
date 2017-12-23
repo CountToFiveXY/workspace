@@ -115,13 +115,20 @@ public class MyApp {
 				String[][] table1 = FileHandler.convertInputCSVFileToArray("Tables/1.csv");
 				String[][] table2 = FileHandler.convertInputCSVFileToArray("Tables/2.csv");
 				String[][] table3 = FileHandler.convertInputCSVFileToArray("Tables/3.csv");
-				System.out.println("\n[Complete]: 表格数据已呈现完毕\n");
+				if (table1[0][0] == null) {
+					System.out.println("\n[Error]: 找不到表格, 请将表格放在Tables文件夹下.\n");
+				} else {
+					System.out.println("\n[Complete]: 表格数据已呈现完毕\n");
+				}
 
 				//phase 2: create WorkData For sheets.
 				System.out.println("2.-->转换班表中\n");
 				workSlotsCreator.createWorkSheetData(table1);
 				workSlotsCreator.createWorkSheetData(table2);
 				workSlotsCreator.createWorkSheetData(table3);
+				if (workSlotsCreator.getAllWorkSlotContainersList().size() == 0)  {
+					System.out.println("[Error]: 一个班次都没找到，场面一度非常尴尬.\n");
+				}
 				if (workSlotsCreator.getAllWorkSlotContainersList().size() != 21) {
 					System.out.println("[Warning]: 3张班表应该有21天才对, 目前只有"+workSlotsCreator.getAllWorkSlotContainersList().size()+"天的班.\n");
 				} else {
@@ -135,7 +142,7 @@ public class MyApp {
 				try {
 					workSlotsHandler.init(workSlotsCreator, fileHandler,fromDate, toDate);
 				} catch (ParseException e1) {
-					e1.printStackTrace();
+					System.out.println("出错了!错误信息："+e1.getStackTrace());
 				}
 				System.out.println("本次有工资记录的员工人数有: "+ workSlotsCreator.getPersonMap().keySet()+"\n");
 				System.out.println("请复制粘贴此列表以便逐个查询,或者你可以每次查人之前都点一下'加载表格'来重复显示该内容.👌");
