@@ -79,7 +79,7 @@ public class FileHandler {
 	}
 
 	public void setUpSalaryMap() {
-		System.out.println("-->开始载入工资表格");
+		System.out.println("\n-->开始载入工资表格");
 		try {
             @SuppressWarnings("resource")
 			BufferedReader reader = new BufferedReader(new FileReader("salary.txt"));
@@ -92,7 +92,6 @@ public class FileHandler {
             	String personName = salaryContent[0];
             	Double salary = Double.parseDouble(salaryContent[1]);
             	if (salaryMap.containsKey(personName)) {
-            		System.out.println(personName+"已有工资，无需反复加载");
             		continue;
             	}
             	salaryMap.put(personName, salary);
@@ -102,14 +101,10 @@ public class FileHandler {
 			System.out.println("\n工资表无法被打开，具体原因请参照:\n "+e.toString());
 			return;
 		}
-		System.out.println("工资表载入完毕，将进行确认");
-		//这里打印出班表的二维数组模型以供对照//
-
-		for(String personName :salaryMap.keySet()) {
-			System.out.println(personName +"的每小时工资是: " +salaryMap.get(personName));
-		}
+		System.out.println("[Complete]工资表载入完毕\n");
 	}
 
+	//这个方法是用来打印Log的
 	public void printSalarySummary (String logs) {
 		try {
 			File file = new File("工资查询记录.txt");
@@ -117,6 +112,7 @@ public class FileHandler {
 			FileWriter fw = new FileWriter("工资查询记录.txt",true);
 			BufferedWriter writer = new BufferedWriter(fw);
 			if (!isExisted) {
+			    //Log的开头
 				writer.write("🌚功夫茶员工工资查询日志🌝");
 				writer.newLine();
 				writer.write("========================");

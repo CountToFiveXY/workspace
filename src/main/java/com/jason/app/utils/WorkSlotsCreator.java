@@ -17,6 +17,7 @@ public class WorkSlotsCreator {
 
     List<WorkSlotContainer> AllWorkSlotContainersList = new ArrayList<>();
     int WorkSlotsSum = 0;
+    //这张表列出的是三个班表里所有在列的人
     HashMap<String, Person> personMap = new HashMap<>();
 
     /**

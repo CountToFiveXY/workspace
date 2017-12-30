@@ -2,6 +2,7 @@ package com.jason.app.time;
 import com.jason.app.objects.Person;
 import com.jason.app.utils.FileHandler;
 import com.jason.app.utils.WorkSlotsCreator;
+import lombok.Getter;
 
 import java.util.*;
 
@@ -19,6 +20,9 @@ public class WorkSlotsHandler {
     HashMap<String, Double> salaryMap = new HashMap<>();
     //先建着，估计以后有用//
     HashSet<Person> fullTimePerson;
+    @Getter
+    HashMap<String, String> personSalaryMap = new HashMap<>();
+
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     Calendar calendar = Calendar.getInstance();
     
@@ -124,10 +128,13 @@ public class WorkSlotsHandler {
 			double workHour = workSlot.getWorkTime();
 			double pre = hours;
 			hours += workHour;
-			logs.append(String.format("%s, 班时: %s-%s, 总时长: %.2f + %.2f = %.2f小时.@", date,from,to,pre,workHour,hours));
+			logs.append(String.format("%s, 班时: %s-%s, 总时长: %.2f + %.2f = %.2f 小时.@", date,from,to,pre,workHour,hours));
 		}
 		double sum = salary * hours;
 		logs.append(String.format("该时段总工资为: \n%.2f($/h) X %.2f(小时) = %.2f刀.@",salary,hours,sum));
+
+		//将人名和它对应的总结log放入总结表中
+		personSalaryMap.put(person.getName(), person.getName()+String.format(" 该时段总工资为: \n%.2f($/h) X %.2f(小时) = %.2f刀.@",salary,hours,sum).toString());
 		//彩蛋
 		if (sum > 800.00)
 			logs.append("这你不请客就说不过去了吧! 功夫茶的火锅钱你包了😍");
@@ -145,7 +152,7 @@ public class WorkSlotsHandler {
     	System.out.println("-->查询"+ Name +"的工资记录");
 		if (!salaryMap.containsKey(Name)) {
 			System.out.println("\n[Error]: 无法找到"+Name+"的工资记录，请更新Salary.txt😮");
-			System.out.println("程序暂停，请更新工资表后再点击查询工资按钮\n");
+			System.out.println("[Warning]请更新工资表后再点击查询工资按钮\n");
 			return 0.0;
 		}
 		System.out.println("[Done!]:已找到"+Name+"的工资记录，请去工资日志下查看🌞.\n");

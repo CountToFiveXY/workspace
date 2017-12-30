@@ -1,3 +1,4 @@
+import com.jason.app.objects.Person;
 import com.jason.app.time.WorkSlotsHandler;
 import com.jason.app.utils.FileHandler;
 import com.jason.app.utils.ImageHandler;
@@ -29,7 +30,8 @@ public class MyApp {
 		final String LABEL2 = "结束日期:";
 		final String LABEL3 = "员工姓名:";
 		final String BUTTON1 = "加载表格";
-		final String BUTTON2 = "查询工资";
+		final String BUTTON2 = "查询";
+		final String BUTTON3 = "一键查询";
 		final String ORIGINAL_IMAGE_PATH = "resource/1.jpg";
 
         //三个核心类的对象+一个背景处理器的对象
@@ -61,7 +63,7 @@ public class MyApp {
 		authorLabel.setBounds(0,7,250,21);;
 		fromLabel.setBounds(30,35,70,30);
 		toLabel.setBounds(30,70,70,30);
-		nameLabel.setBounds(30,105,70,30);
+		nameLabel.setBounds(30,145,70,30);
 		authorLabel.setFont(new Font("Times New Roman",1,14));
 		fromLabel.setFont(new Font("Dialog",0,13));
 		toLabel.setFont(new Font("Dialog",0,13));
@@ -88,16 +90,17 @@ public class MyApp {
 		nameText = new JTextField();
 		fromText.setBounds(95,35,125,28);
 		toText.setBounds(95,70,125,28);
-		nameText.setBounds(95,105,125,28);
+		nameText.setBounds(95,145,60,32);
 
 		jpanel.add(fromText);
 		jpanel.add(toText);
 		jpanel.add(nameText);
 
 		//两个按钮
-		JButton find, search;
+		JButton find, search, superSearch;
 		find = new JButton(BUTTON1);
 		search = new JButton(BUTTON2);
+		superSearch = new JButton(BUTTON3);
 
 		//第一个按钮功能：建立数据
 		find.addActionListener(new ActionListener() {
@@ -154,15 +157,20 @@ public class MyApp {
 			String s = "";
 			@Override
 			public void actionPerformed (ActionEvent event) {
+				//先把工资表的数据加载进来
 				fileHandler.setUpSalaryMap();
-				System.out.println("[Complete]: 当前工资表呈现完毕\n");
+
+				//开始对输入的那个人进行工资查询
 				if (!nameText.getText().isEmpty()) {
-					s = "开始查询"+nameText.getText()+"的工资";
+					s = "查询"+nameText.getText()+"的工资";
+
 					String personName = nameText.getText();
+					//每次查询的Log前缀
+					String logs = "";
+					String timeLine = "[RECORDED] 本次单独查询时间: "+Tools.getCurrentTime()+":@";
+					logs += timeLine;
+
 					try{
-						String logs = "";
-						String timeLine = "[RECORDED] 本次查询时间: "+Tools.getCurrentTime()+":@";
-						logs += timeLine;
 						logs += String.format("设定员工为:%s, 设定时间段为: %s 到 %s:@",nameText.getText(),fromText.getText(),toText.getText());
 						logs += workSlotsHandler.findResult(personName);
 						if (logs.endsWith("!")) {
@@ -176,20 +184,59 @@ public class MyApp {
 					s = "某个2货忘了输名字";
 				}
 				JOptionPane.showMessageDialog(null, s);
-
 			}
 		});
+
+		// 第三个按钮功能: 一键全查
+		superSearch.addActionListener(new ActionListener() {
+			String s = "";
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				s = "查询所有人的工资";
+
+				//还是要先把工资表的数据加载进来
+				fileHandler.setUpSalaryMap();
+
+				//每次查询的Log前缀
+				String logs = "";
+				String timeLine = "[RECORDED] 本次全体查询时间: "+Tools.getCurrentTime()+":@";
+				logs += timeLine;
+				for(String employee : workSlotsCreator.getPersonMap().keySet()) {
+					try{
+						workSlotsHandler.findResult(employee);
+					} catch (ParseException p) {
+						System.out.println(p.getMessage());
+					}
+				}
+				logs += String.format("时间段为: %s 到 %s, 所有人的工资为:@",fromText.getText(),toText.getText());
+				for(String summaryString: workSlotsHandler.getPersonSalaryMap().values()) {
+					logs += summaryString;
+				}
+				for(String person: workSlotsCreator.getPersonMap().keySet()) {
+					if(!workSlotsHandler.getPersonSalaryMap().containsKey(person)) {
+						logs += String.format("[出错啦!]一键查询并没有查询到 "+ person + "，请使用单独查询功能对此人检查错误.@");
+					}
+				}
+				logs += "========================";
+				fileHandler.printSalarySummary(logs);
+				JOptionPane.showMessageDialog(null, s);
+			}
+		});
+
 
         //配置按钮参数
 		find.setBackground(Color.WHITE);
 		find.setOpaque(true);
-		find.setBounds(10,140,107,35);
+		find.setBounds(20,102,100,35);
+		superSearch.setBackground(Color.WHITE);
+		superSearch.setOpaque(true);
+		superSearch.setBounds(125,102,100,35);
 		search.setBackground(Color.WHITE);
 		search.setOpaque(true);
-		search.setBounds(135,140,107,35);
-
+		search.setBounds(165,144,60,30);
 		jpanel.add(find);
 		jpanel.add(search);
+		jpanel.add(superSearch);
 		
 		//GUI 配置设定
 		jf.setBounds(0,0,APP_WIDTH,APP_HEIGHT);
