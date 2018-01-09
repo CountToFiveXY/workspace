@@ -19,20 +19,23 @@ import java.util.Date;
  */
 public class MyApp {
 
-	public static void main(String[] args) throws ParseException {
+	//App的参数
+	private final static int APP_WIDTH = 250;
+	private final static int APP_HEIGHT = 205;
+	private final static String KFT_VERSION_STRING  = " KungFuTea工资计算器v2.0";
+	private final static String AUTHOR_LABEL = "        ~~ Developed By @Jason ~~";
+	private final static String LABEL1 = "开始日期:";
+	private final static String LABEL2 = "结束日期:";
+	private final static String LABEL3 = "员工姓名:";
+	private final static String BUTTON1 = "加载表格";
+	private final static String BUTTON2 = "查询";
+	private final static String BUTTON3 = "一键查询";
+	private final static String ORIGINAL_IMAGE_PATH = "resource/1.jpg";
 
-		//App的参数
-		final int APP_WIDTH = 250;
-		final int APP_HEIGHT = 205;
-		final String KFT_VERSION_STRING  = " KungFuTea工资计算器v2.0";
-		final String AUTHOR_LABEL = "        ~~ Developed By @Jason ~~";
-		final String LABEL1 = "开始日期:";
-		final String LABEL2 = "结束日期:";
-		final String LABEL3 = "员工姓名:";
-		final String BUTTON1 = "加载表格";
-		final String BUTTON2 = "查询";
-		final String BUTTON3 = "一键查询";
-		final String ORIGINAL_IMAGE_PATH = "resource/1.jpg";
+	static JFrame jf = new JFrame(KFT_VERSION_STRING);
+	static JPanel jpanel = (JPanel)jf.getContentPane();
+
+	public static void main(String[] args) throws ParseException {
 
         //三个核心类的对象+一个背景处理器的对象
 		final FileHandler fileHandler = new FileHandler();
@@ -45,36 +48,29 @@ public class MyApp {
 		JLabel bgLabel = imageHandler.setBackGrondImageLabel();
 
         //开始建立GUI
-		JFrame jf = new JFrame(KFT_VERSION_STRING);
 		jf.setLayout(null);
 		jf.getLayeredPane().add(bgLabel, new Integer(Integer.MIN_VALUE));
 
-		JPanel jpanel = (JPanel)jf.getContentPane();
 		jpanel.setLayout(null);
 		jpanel.setBounds(0,0,APP_WIDTH,APP_HEIGHT);
 		jpanel.setOpaque(false);
 
 		//建立Label
 		JLabel authorLabel,fromLabel, toLabel, nameLabel;
-		authorLabel = new JLabel(AUTHOR_LABEL);
-		fromLabel = new JLabel(LABEL1);
-		toLabel = new JLabel(LABEL2);
-		nameLabel = new JLabel(LABEL3);
-		authorLabel.setBounds(0,7,250,21);;
-		fromLabel.setBounds(30,35,70,30);
-		toLabel.setBounds(30,70,70,30);
-		nameLabel.setBounds(30,145,70,30);
-		authorLabel.setFont(new Font("Times New Roman",1,14));
-		fromLabel.setFont(new Font("Dialog",0,13));
-		toLabel.setFont(new Font("Dialog",0,13));
-		nameLabel.setFont(new Font("Dialog",0,13));
+
+		authorLabel = createLable(AUTHOR_LABEL, new Font("Times New Roman",1,14));
 		authorLabel.setBackground(Color.YELLOW);
 		authorLabel.setForeground(Color.BLUE);
 		authorLabel.setOpaque(true);
-        jpanel.add(authorLabel);
-		jpanel.add(fromLabel);
-		jpanel.add(toLabel);
-		jpanel.add(nameLabel);
+
+		fromLabel = createLable(LABEL1, new Font("Dialog",0,13));
+		toLabel = createLable(LABEL2, new Font("Dialog",0,13));
+		nameLabel = createLable(LABEL3, new Font("Dialog",0,13));
+
+		setLabel(authorLabel,0,7,250,21);
+		setLabel(fromLabel, 30,35,70,30);
+		setLabel(toLabel, 30,70,70,30);
+		setLabel(nameLabel,30,145,70,30);
 		
         //获取当前日期
 		Date date = new Date();
@@ -96,11 +92,11 @@ public class MyApp {
 		jpanel.add(toText);
 		jpanel.add(nameText);
 
-		//两个按钮
+		//三个按钮
 		JButton find, search, superSearch;
-		find = new JButton(BUTTON1);
-		search = new JButton(BUTTON2);
-		superSearch = new JButton(BUTTON3);
+		find = createButton(BUTTON1, Color.white);
+		search = createButton(BUTTON2, Color.white);
+		superSearch = createButton(BUTTON3, Color.white);
 
 		//第一个按钮功能：建立数据
 		find.addActionListener(new ActionListener() {
@@ -225,20 +221,43 @@ public class MyApp {
 
 
         //配置按钮参数
-		find.setBackground(Color.WHITE);
-		find.setOpaque(true);
-		find.setBounds(20,102,100,35);
-		superSearch.setBackground(Color.WHITE);
-		superSearch.setOpaque(true);
-		superSearch.setBounds(125,102,100,35);
-		search.setBackground(Color.WHITE);
-		search.setOpaque(true);
-		search.setBounds(165,144,60,30);
-		jpanel.add(find);
-		jpanel.add(search);
-		jpanel.add(superSearch);
+		setButton(find, 20,102,100,35);
+		setButton(superSearch,125,102,100,35);
+		setButton(search,165,144,60,30);
 		
 		//GUI 配置设定
+		setJFrame();
+	}
+
+	private static JLabel createLable(String labelName, Font font) {
+		JLabel label = new JLabel(labelName);
+		label.setFont(font);
+		return label;
+	}
+
+	private static void setLabel(JLabel label, int x, int y, int width, int height) {
+		label.setBounds(x, y, width, height);
+		jpanel.add(label);
+	}
+
+	private static JButton createButton(String buttonName, Color color) {
+		JButton button = new JButton(buttonName);
+		button.setBackground(color);
+        button.setOpaque(true);
+        return button;
+	}
+
+	private static void setButton(JButton button, int x, int y, int width, int height) {
+		button.setBounds(x, y, width, height);
+		jpanel.add(button);
+	}
+
+    //TBD
+	private static JTextField createTextWindow(String text) {
+		return null;
+	}
+
+	private static void setJFrame() {
 		jf.setBounds(0,0,APP_WIDTH,APP_HEIGHT);
 		jf.setVisible(true);
 		jf.setLocationRelativeTo(null);
