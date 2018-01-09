@@ -20,8 +20,7 @@ public class WorkSlotsHandler {
     HashMap<String, Double> salaryMap = new HashMap<>();
     //先建着，估计以后有用//
     HashSet<Person> fullTimePerson;
-    @Getter
-    HashMap<String, String> personSalaryMap = new HashMap<>();
+    @Getter HashMap<String, String> personSalaryMap = new HashMap<>();
 
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     Calendar calendar = Calendar.getInstance();
@@ -39,7 +38,7 @@ public class WorkSlotsHandler {
     }
     
     public List<WorkSlotContainer> getAllWorkContainerBetweenTwoDays (String fromDateString, String toDateString) {
-    	List<WorkSlotContainer> allWorkContainersBetweenTwoDays= new ArrayList<>();
+    	List<WorkSlotContainer> allWorkContainersBetweenTwoDays = new ArrayList<>();
     	Date fromDate = null;
     	Date toDate = null;
 		try {
@@ -110,7 +109,7 @@ public class WorkSlotsHandler {
     		return logs.toString();
     	}
     	if (workSlotsList.isEmpty()) {
-			logs.append("根据输入的表格，这个人这段时间内傻啦吧唧的没有上班.😴@========================");
+			logs.append("输入的表格显示这个人这段时间内傻了吧唧地没有上班.😴@========================");
     		return logs.toString();
     	}
     	//开始录入工资LOG
@@ -134,17 +133,12 @@ public class WorkSlotsHandler {
 		logs.append(String.format("该时段总工资为: \n%.2f($/h) X %.2f(小时) = %.2f刀.@",salary,hours,sum));
 
 		//将人名和它对应的总结log放入总结表中
-		personSalaryMap.put(person.getName(), person.getName()+String.format(" 该时段总工资为: \n%.2f($/h) X %.2f(小时) = %.2f刀.@",salary,hours,sum).toString());
+		personSalaryMap.put(person.getName(), person.getName() + String.format(" 该时段总工资为: \n%.2f($/h) X %.2f(小时) = %.2f刀.%s@",salary,hours,sum,easterEgg2(sum)).toString());
+
 		//彩蛋
-		if (sum > 800.00)
-			logs.append("这你不请客就说不过去了吧! 功夫茶的火锅钱你包了😍");
-		else if (sum > 400.00)
-			logs.append("不错,你上班时间及格了.再接再厉,晚上吃鸡.👏");
-		else if (sum > 150)
-			logs.append("你个穷逼,还不赶紧干活挣钱. 这点钱套套都喂不饱🌚");
-		else
-			logs.append("要你何用👎");
+		logs.append(easterEgg1(sum));
 		logs.append("@========================");
+
     	return logs.toString();
     }
 
@@ -157,6 +151,29 @@ public class WorkSlotsHandler {
 		}
 		System.out.println("[Done!]:已找到"+Name+"的工资记录，请去工资日志下查看🌞.\n");
 		return salaryMap.get(Name);		
+	}
+
+	public String easterEgg1 (double sum) {
+		if (sum > 800.00)
+			return "(这么多钱你好意思要吗,上交给静文20%吧.😍)";
+		else if (sum > 400.00)
+			return "(不错,你上班时间及格了.攒点钱可以讨老婆/老公了.👏)";
+		else if (sum > 150)
+			return "(你个穷逼,还不赶紧干活挣钱.🌚)";
+		else
+		return "(要你何用.👎)";
+	}
+
+	public String easterEgg2 (double sum) {
+		//彩蛋2
+		if (sum > 800.00)
+			return "(土豪请客🤤)";
+		else if (sum > 400.00)
+			return "(你及格了👏)";
+		else if (sum > 150)
+			return "(穷逼一个🌚)";
+		else
+		    return "(要你何用👎)";
 	}
 }
 
